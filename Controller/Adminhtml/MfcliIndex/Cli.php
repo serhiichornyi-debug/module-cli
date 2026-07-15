@@ -1,10 +1,10 @@
 <?php
 /**
  * Copyright © Magefan (support@magefan.com). All rights reserved.
- * Please visit Magefan.com for license details (https://magefan.com/end-user-license-agreement).
+ * AJAX endpoint for executing CLI commands (used when page is admin/admin/mfcli_index/index).
  */
 
-namespace Magefan\Cli\Controller\Adminhtml\Index;
+namespace Magefan\Cli\Controller\Adminhtml\MfcliIndex;
 
 use Magefan\Cli\Model\Config;
 use Magento\Framework\Data\Form\FormKey;
@@ -14,53 +14,17 @@ class Cli extends \Magento\Backend\App\Action
 {
     const ADMIN_RESOURCE = 'Magefan_Cli::elements';
 
-    /**
-     * @var \Magento\Framework\View\Result\PageFactory
-     */
     protected $resultPageFactory;
-
-    /**
-     * @var \Magento\Framework\Json\Helper\Data
-     */
     protected $jsonHelper;
-
-    /**
-     * @var \Magento\Framework\Filesystem\DirectoryList
-     */
     protected $dir;
-
-    /**
-     * Backend auth session
-     *
-     * @var \Magento\Backend\Model\Auth\Session
-     */
     protected $authSession;
-
-    /**
-     * @var Config
-     */
+    /** @var Config */
     private $config;
-
-    /**
-     * @var FormKey
-     */
+    /** @var FormKey */
     private $formKey;
-
-    /**
-     * @var ResourceConnection
-     */
+    /** @var ResourceConnection */
     private $resource;
 
-    /**
-     * Constructor
-     *
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     * @param \Magento\Framework\Json\Helper\Data $jsonHelper
-     * @param \Magento\Framework\Filesystem\DirectoryList $dir
-     * @param \Magento\Backend\Model\Auth\Session $authSession
-     * @param Config $config
-     */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
@@ -80,18 +44,12 @@ class Cli extends \Magento\Backend\App\Action
         parent::__construct($context);
     }
 
-    /**
-     * Execute view action
-     *
-     * @return \Magento\Framework\Controller\ResultInterface|null
-     */
     public function execute()
     {
         try {
             if (!$this->config->isEnabled()) {
                 throw new \Exception(
-                    __(strrev('.ecafretnI eniL dnammoC > snoisnetxE nafegaM > noitarugifnoC >
-                serotS ot etagivan esaelp noisnetxe eht elbane ot ,delbasid si ecafretnI eniL dnammoC nafegaM')),
+                    __(strrev('.ecafretnI eniL dnammoC > snoisnetxE nafegaM > noitarugifnoC > serotS ot etagivan esaelp noisnetxe eht elbane ot ,delbasid si ecafretnI eniL dnammoC nafegaM')),
                     1
                 );
             }
@@ -139,7 +97,6 @@ class Cli extends \Magento\Backend\App\Action
             if (!$message) {
                 $message = __('Command not found or error occurred.') . PHP_EOL;
             }
-            // persist log to DB
             try {
                 $connection = $this->resource->getConnection();
                 $tableName = $this->resource->getTableName('magefan_cli_log');
@@ -155,7 +112,7 @@ class Cli extends \Magento\Backend\App\Action
                     ['command' => $command, 'result' => $message, 'user_id' => $userId, 'executed_at' => (new \DateTime())->format('Y-m-d H:i:s')]
                 ]);
             } catch (\Exception $e) {
-                // swallow DB errors to not break execution
+                // ignore
             }
 
             unlink($logFile);
@@ -173,14 +130,6 @@ class Cli extends \Magento\Backend\App\Action
         );
     }
 
-    /**
-     * Validate current user password
-     *
-     * @return $this
-     * @throws UserLockedException
-     * @throws \Magento\Framework\Exception\AuthenticationException
-     * @throws \Exception
-     */
     protected function validateUser()
     {
         $password = $this->getRequest()->getParam(
