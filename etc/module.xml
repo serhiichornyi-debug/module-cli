@@ -9,6 +9,7 @@
 	<module name="Magefan_Cli">
         <sequence>
             <module name="Magefan_Community" />
+            <module name="Magento_Backend" />
         </sequence>
     </module>
 </config>

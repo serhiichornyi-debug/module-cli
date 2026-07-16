@@ -1,0 +1,43 @@
+<?php
+/**
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
+ * Please visit Magefan.com for license details (https://magefan.com/end-user-license-agreement).
+ */
+?>
+
+<?php
+/**
+ * CLI template
+ * 
+ * @var $block \Magefan\Cli\Block\Adminhtml\History 
+ * @var $mfSecureRenderer \Magefan\Community\Api\SecureHtmlRendererInterface
+ *
+ * @codingStandardsIgnoreStart
+ */
+
+$logs = $block->getLogs(200);
+?>
+<div class="admin__page-section">
+    <table class="data-grid">
+        <thead>
+            <tr>
+                <th><?= $block->escapeHtml(__('ID')) ?></th>
+                <th><?= $block->escapeHtml(__('Command')) ?></th>
+                <th><?= $block->escapeHtml(__('Result')) ?></th>
+                <th><?= $block->escapeHtml(__('User ID')) ?></th>
+                <th><?= $block->escapeHtml(__('Executed At')) ?></th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($logs as $row): ?>
+            <tr>
+                <td><?= (int)$row['log_id'] ?></td>
+                <td><pre><?= $block->escapeHtml($row['command']) ?></pre></td>
+                <td><pre><?= $block->escapeHtml($row['result']) ?></pre></td>
+                <td><?= $row['user_id'] !== null ? (int)$row['user_id'] : '' ?></td>
+                <td><?= $block->escapeHtml($row['executed_at']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
