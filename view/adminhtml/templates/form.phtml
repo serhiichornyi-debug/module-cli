@@ -208,33 +208,44 @@ $script = '';
             $('#command').val(command).focus();
         });
 
-        $('.execute').click(function() {
+        $('.execute').click(function () {
             var command = 'bin/magento ' + $(this).closest('li').find('.execute').attr('data-name');
-            var loading = false;
-            
-            if (loading) return;
-            loading = true;
 
-            $.ajax({
-                url: '" . $block->escapeUrl($block->getUrl('*/*/cli')) . "',
-                data : {command:'php ' + command, current_password:$('#user_current_password').val(),form_key:$('input[name=\"form_key\"]').val()},                type: 'POST',
-                dataType: 'json',
-                showLoader: true
-            }).done(function (data) {
-                loading = false;
-                if (data && data.message) {
-                    addContent('<strong>$ </strong>' + command + '<br/>');
-                    addContent(data.message);
-                } else {
-                    alert('" . $block->escapeHtml(__('Unexpected error. Please refresh the page or try later.')) . "');
-                }
-                    
-                if (data && data.newFormKey) {
-                    FORM_KEY = data.newFormKey;
-                    document.querySelector('input[name=\"form_key\"]').value = FORM_KEY;
+            confirmation({
+                title: 'Confirm Command',
+                content: 'Are you sure you want to execute:<br><strong>' + command + '</strong>?',
+                actions: {
+                    confirm: function () {
+
+                        $.ajax({
+                            url: '" . $block->escapeUrl($block->getUrl('*/*/cli')) . "',
+                            data: {
+                                command: 'php ' + command,
+                                current_password: $('#user_current_password').val(),
+                                form_key: $('input[name=\"form_key\"]').val()
+                            },
+                            type: 'POST',
+                            dataType: 'json',
+                            showLoader: true
+                        }).done(function (data) {
+
+                            if (data && data.message) {
+                                addContent('<strong>$ </strong>' + command + '<br/>');
+                                addContent(data.message);
+                            } else {
+                                alert('" . $block->escapeHtml(__('Unexpected error. Please refresh the page or try later.')) . "');
+                            }
+
+                            if (data && data.newFormKey) {
+                                FORM_KEY = data.newFormKey;
+                                $('input[name=\"form_key\"]').val(FORM_KEY);
+                            }
+                        });
+                    },
+                    cancel: function () {}
                 }
             });
-        })
+        });
 	});
     "; ?>
 
