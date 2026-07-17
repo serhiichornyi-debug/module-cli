@@ -208,14 +208,14 @@ $script = '';
             $('#command').val(command).focus();
         });
 
-        $('.execute').click(function () {
+        $('.execute').click(function() {
             var command = 'bin/magento ' + $(this).closest('li').find('.execute').attr('data-name');
 
             confirmation({
                 title: 'Confirm Command',
                 content: 'Are you sure you want to execute:<br><strong>' + command + '</strong>?',
                 actions: {
-                    confirm: function () {
+                    confirm: function() {
 
                         $.ajax({
                             url: '" . $block->escapeUrl($block->getUrl('*/*/cli')) . "',
@@ -242,7 +242,7 @@ $script = '';
                             }
                         });
                     },
-                    cancel: function () {}
+                    cancel: function() {}
                 }
             });
         });
