@@ -210,10 +210,11 @@ $script = '';
 
         $('.execute').click(function() {
             var command = 'bin/magento ' + $(this).closest('li').find('.execute').attr('data-name');
+            $('#command').val(command).focus();
 
             confirmation({
-                title: 'Confirm Command',
-                content: 'Are you sure you want to execute:<br><strong>' + command + '</strong>?',
+                title: $.mage.__('Execute Command:') + ' ' + command,
+                content: $.mage.__('Are you sure you want to do this?'),
                 actions: {
                     confirm: function() {
 
