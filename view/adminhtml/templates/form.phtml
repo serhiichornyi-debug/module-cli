@@ -137,15 +137,15 @@ $script = '';
 		}
 
 		function addCommand()
-		{
-			var el = $('#command');
-			v = $.trim(el.val());
-			if (v) {
-				commandLog.push(v);
-			}
-			var commandLogIndex = 0;
-			el.val('');
-		}
+        {
+            var el = $('#command');
+            var v = $.trim(el.val());
+            if (v) {
+                commandLog.push(v);
+            }
+            commandLogIndex = 0;
+            el.val('');
+        }
 
 		function addContent(c)
 		{
